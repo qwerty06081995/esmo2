@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="noesmo">
+        <createTable tableName="NOESMO_ADMIN_ORGANIZATION">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_NOESMO_ADMIN_ORGANIZATION"/>
+            </column>
+            <column name="PARENT_ID" type="UUID"/>
+            <column name="ORG_NAME" type="VARCHAR(255)"/>
+            <column name="ORG_NAME_SHORT" type="VARCHAR(255)"/>
+            <column name="REGION_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REGION_AREA_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ROW_STATUS" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="noesmo">
+        <createTable tableName="NOESMO_ADMIN_SUB_SYSTEM">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_NOESMO_ADMIN_SUB_SYSTEM"/>
+            </column>
+            <column name="ADMIN_ORGANIZATION_ID" type="UUID"/>
+            <column name="SUB_SYSTEM_ID" type="UUID"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="3" author="noesmo">
+        <createTable tableName="NOESMO_REGION">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_NOESMO_REGION"/>
+            </column>
+            <column name="REGION_ID" type="INT"/>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="CLASSIFIED" type="INT"/>
+            <column name="ROW_STATUS" type="INT"/>
+            <column name="CODE" type="VARCHAR(255)"/>
+            <column name="DMED_ID" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="4" author="noesmo">
+        <createTable tableName="NOESMO_REGION_AREA">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_NOESMO_REGION_AREA"/>
+            </column>
+            <column name="REGION_AREA_ID" type="INT"/>
+            <column name="REGION_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="CLASSIFIED" type="INT"/>
+            <column name="ROW_STATUS" type="INT"/>
+            <column name="DMED_ID" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="5" author="noesmo">
+        <createTable tableName="NOESMO_SUB_SYSTEM">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_NOESMO_SUB_SYSTEM"/>
+            </column>
+            <column name="CODE" type="VARCHAR(255)"/>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="ALT_NAME" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="6" author="noesmo">
+        <addColumn tableName="NOESMO_USER">
+            <column name="DTYPE" type="VARCHAR(31)"/>
+        </addColumn>
+
+        <update tableName="NOESMO_USER">
+            <column name="DTYPE" value="noesmo_User"/>
+            <where>DTYPE is null</where>
+        </update>
+    </changeSet>
+    <changeSet id="7" author="noesmo">
+        <addColumn tableName="NOESMO_USER">
+            <column name="PATRONYMIC" type="VARCHAR(255)"/>
+            <column name="ROW_STATUS" type="INT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="8" author="noesmo">
+        <createIndex indexName="IDX_NOESMO_ADMIN_ORGANIZATION_REGION" tableName="NOESMO_ADMIN_ORGANIZATION">
+            <column name="REGION_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="REGION_ID" baseTableName="NOESMO_ADMIN_ORGANIZATION"
+                                 constraintName="FK_NOESMO_ADMIN_ORGANIZATION_ON_REGION" referencedColumnNames="ID"
+                                 referencedTableName="NOESMO_REGION"/>
+    </changeSet>
+    <changeSet id="9" author="noesmo">
+        <createIndex indexName="IDX_NOESMO_ADMIN_ORGANIZATION_REGION_AREA" tableName="NOESMO_ADMIN_ORGANIZATION">
+            <column name="REGION_AREA_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="REGION_AREA_ID" baseTableName="NOESMO_ADMIN_ORGANIZATION"
+                                 constraintName="FK_NOESMO_ADMIN_ORGANIZATION_ON_REGION_AREA" referencedColumnNames="ID"
+                                 referencedTableName="NOESMO_REGION_AREA"/>
+    </changeSet>
+    <changeSet id="10" author="noesmo">
+        <createIndex indexName="IDX_NOESMO_REGION_AREA_REGION" tableName="NOESMO_REGION_AREA">
+            <column name="REGION_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="REGION_ID" baseTableName="NOESMO_REGION_AREA"
+                                 constraintName="FK_NOESMO_REGION_AREA_ON_REGION" referencedColumnNames="ID"
+                                 referencedTableName="NOESMO_REGION"/>
+    </changeSet>
+    <changeSet id="11" author="noesmo">
+        <addForeignKeyConstraint baseColumnNames="ADMIN_ORGANIZATION_ID" baseTableName="NOESMO_ADMIN_SUB_SYSTEM"
+                                 constraintName="FK_NOESMO_ADMIN_SUB_SYSTEM_ON_ADMIN_ORGANIZATION"
+                                 referencedColumnNames="ID" referencedTableName="NOESMO_ADMIN_ORGANIZATION"/>
+    </changeSet>
+    <changeSet id="12" author="noesmo">
+        <addForeignKeyConstraint baseColumnNames="SUB_SYSTEM_ID" baseTableName="NOESMO_ADMIN_SUB_SYSTEM"
+                                 constraintName="FK_NOESMO_ADMIN_SUB_SYSTEM_ON_SUB_SYSTEM" referencedColumnNames="ID"
+                                 referencedTableName="NOESMO_SUB_SYSTEM"/>
+    </changeSet>
+</databaseChangeLog>

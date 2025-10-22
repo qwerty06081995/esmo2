@@ -18,11 +18,9 @@ public class Region {
     @Id
     private UUID id;
 
-    @Composition
     @OneToMany(mappedBy = "region")
     private List<RegionArea> regionAreas;
 
-    @Composition
     @OneToMany(mappedBy = "region")
     private List<AdminOrganization> adminOrganizations;
 

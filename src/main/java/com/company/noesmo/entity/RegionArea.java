@@ -20,7 +20,6 @@ public class RegionArea {
     @Id
     private UUID id;
 
-    @Composition
     @OneToMany(mappedBy = "regionArea")
     private List<AdminOrganization> adminOrganizations;
 
